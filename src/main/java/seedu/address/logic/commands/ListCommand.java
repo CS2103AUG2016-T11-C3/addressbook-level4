@@ -53,7 +53,7 @@ public class ListCommand extends Command {
             break;
 
         case LIST_KEYWORD_OD:
-            model.updateFilteredTaskList("OVERDUE");
+            model.updateFilteredTaskList("OVERDUE","EXPIRE");
             break;
         }
 
