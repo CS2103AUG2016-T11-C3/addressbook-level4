@@ -62,10 +62,12 @@ public class ModelManager extends ComponentManager implements Model {
     
     public void checkStatus(){
         UniqueTaskList tasks = taskBook.getUniqueDatedTaskList();
+        UniqueTaskList floating = taskBook.getUniqueUndatedTaskList();
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");       
         
         for (Task target : tasks) {
+            assert target.getDatetime().getStart() != null;
             if(target.getDatetime().getEnd() == null){
                 LocalDateTime dateTime = LocalDateTime.parse(target.getDatetime().toString(), formatter);
                 if(dateTime.isBefore(currentTime)){
@@ -93,7 +95,15 @@ public class ModelManager extends ComponentManager implements Model {
                      }catch(TaskNotFoundException e) {}
                  }                                
             }
-        }         
+        }
+        
+        for(Task undatedTarget : floating){
+            if(undatedTarget.getStatus().toString() == "EXPIRE" || undatedTarget.getStatus().toString() == "OVERDUE" ){
+                try{
+                    taskBook.floatingStatusReset(undatedTarget);
+                }catch(TaskNotFoundException e){}
+            }
+        }
     }
     
     @Override
